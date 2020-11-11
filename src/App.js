@@ -1,24 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { Fragment, useState, useEffect } from 'react';
+import { ListarParlamentaresPorSigla } from './services/parlamentares';
+import { ListarPartidos } from './services/partido';
+import { ListGroup } from "react-bootstrap"
+
 
 function App() {
+  const [partidos, setPartidos] = useState([])
+  const [parlamentares, setParlamentares] = useState([])
+  async function listarPartidos() {
+    const p = await ListarPartidos()
+    setPartidos(p.data.dados)
+    console.log(p.data.dados)
+  }
+  useEffect(() => {
+    listarPartidos()
+  }, [])
+
+  async function listarDeputados(sigla) {
+    console.log('entrou aqui')
+    const d = await ListarParlamentaresPorSigla(sigla)
+    console.log(d.data.dados)
+    setParlamentares(d.data.dados)
+  }
+
+  const showItemsList = (itemsList) => itemsList.map((item, index) => <li key={index}><ListGroup.Item >{item.nome}</ListGroup.Item></li>)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <div class='container'>
+        <select className='mb-4' onChange={(event) => listarDeputados(event.target.value)}>
+        <option>Selecione um partido</option>
+          {partidos.map((partido) => {
+            return (<option key={partido.id} value={partido.sigla}>{partido.nome}</option>)
+          })}
+        </select>
+        <ul>
+          <ListGroup>
+            {parlamentares.length !== 0  ? showItemsList(parlamentares) :(<p>Nenhum parlamentar desse partido foi eleito nesta legislatura.</p>)}
+
+          </ListGroup>
+        </ul>
+      </div>
+    </Fragment>
   );
 }
 
