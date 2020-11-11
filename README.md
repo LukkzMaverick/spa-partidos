@@ -1,3 +1,5 @@
 ## Getting Started
 
-<code>npm install</code>
+<code>npm install
+npm init
+</code>
