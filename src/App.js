@@ -10,16 +10,13 @@ function App() {
   async function listarPartidos() {
     const p = await ListarPartidos()
     setPartidos(p.data.dados)
-    console.log(p.data.dados)
   }
   useEffect(() => {
     listarPartidos()
   }, [])
 
   async function listarDeputados(sigla) {
-    console.log('entrou aqui')
     const d = await ListarParlamentaresPorSigla(sigla)
-    console.log(d.data.dados)
     setParlamentares(d.data.dados)
   }
 
